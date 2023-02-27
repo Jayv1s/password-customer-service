@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  description: "A study project"
+  version: "1.0.0"
+  title: "Password for Customer Service"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+  - name: "passwordService"
+    description: "Custom service password"
+paths:
+  /password:
+    post:
+      tags:
+        - "passwordService"
+      summary: "Get next password"
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordDTO'
+      responses:
+        200:
+          description: "Works!"
+    get:
+      tags:
+        - "passwordService"
+      summary: "Get next password"
+      responses:
+        200:
+          description: "Works!"
+components:
+  schemas:
+    PasswordDTO:
+      type: object
+      properties:
+        password:
+          type: string
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
