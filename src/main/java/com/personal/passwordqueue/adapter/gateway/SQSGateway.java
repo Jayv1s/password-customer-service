@@ -1,5 +1,6 @@
 package com.personal.passwordqueue.gateway;
 
+import com.personal.passwordqueue.domain.model.PasswordMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.client.model.PasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,9 @@ public class SQSGateway {
     @Autowired // TODO-3: Refact those autowired for a better approach
     private QueueMessagingTemplate queueMessagingTemplate;
 
-    public void sendMessageToQueue(PasswordDTO passwordDTO, String queueArn) { // TODO-2: Make message generic to receive any model
-        log.info("SQSGateway " + passwordDTO.getPassword());
+    public void sendMessageToQueue(PasswordMessage password, String queueArn) { // TODO-2: Make message generic to receive any model
+        log.info("SQSGateway " + password.getPassword());
 
-        queueMessagingTemplate.convertAndSend(queueArn, passwordDTO);
+        queueMessagingTemplate.convertAndSend(queueArn, password);
     }
 }
