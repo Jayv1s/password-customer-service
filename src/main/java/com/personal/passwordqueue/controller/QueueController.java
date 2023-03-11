@@ -1,17 +1,14 @@
 package com.personal.passwordqueue.controller;
 
-import com.personal.passwordqueue.PasswordQueueApplication;
-import com.personal.passwordqueue.usecase.PostMessageIntoQueueUseCase;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.personal.passwordqueue.domain.IModelMapper;
+import com.personal.passwordqueue.domain.usecase.PostMessageIntoQueueUseCase;
 import lombok.NoArgsConstructor;
-import org.openapitools.client.api.PasswordServiceApi;
+import org.mapstruct.factory.Mappers;
 import org.openapitools.client.model.PasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +31,11 @@ public class QueueController {
 
     @PostMapping(path = "/password", produces = "application/json", consumes = "application/json")
     public ResponseEntity<String> postMessageToPasswordQueue(@RequestBody PasswordDTO passwordDTO) {
-        // TODO-2: Add a model mapper approach
         try {
-            postMessageIntoQueueUseCase.doExecute(passwordDTO, queueArn);
+            postMessageIntoQueueUseCase.doExecute(
+                    Mappers.getMapper(IModelMapper.class).toPasswordDomainModel(passwordDTO),
+                    queueArn
+            );
             return ResponseEntity.ok("Deu certo.");
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());

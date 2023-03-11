@@ -1,11 +1,11 @@
-package com.personal.passwordqueue.usecase;
+package com.personal.passwordqueue.domain.usecase;
 
-import com.personal.passwordqueue.gateway.SQSGateway;
+import com.personal.passwordqueue.adapter.dataprovider.SqsDataProvider;
+import com.personal.passwordqueue.domain.model.PasswordMessage;
+import com.personal.passwordqueue.adapter.gateway.SQSGateway;
 import lombok.extern.slf4j.Slf4j;
-import org.openapitools.client.model.PasswordDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @Slf4j
@@ -14,9 +14,12 @@ public class PostMessageIntoQueueUseCase {
     @Autowired // TODO-3: Refact those autowired for a better approach
     private SQSGateway sqsGateway;
 
-    public void doExecute(PasswordDTO passwordDTO, String queueArn) { // TODO-2: Make message generic to receive any model
-        log.info("PostMessageIntoQueueUseCase " + passwordDTO.getPassword());
+    @Autowired
+    private SqsDataProvider sqsDataProvider;
 
-        sqsGateway.sendMessageToQueue(passwordDTO,  queueArn);
+    public void doExecute(PasswordMessage password, String queueArn) { // TODO-2: Make message generic to receive any model
+        log.info("PostMessageIntoQueueUseCase " + password.getPassword());
+
+        sqsDataProvider.callSendMessageGateway(password, queueArn);
     }
 }
